@@ -1,0 +1,12 @@
+{
+  "extends": "./tsconfig.json",
+  "exclude": [
+    "./stories/**",
+    "./rndemo/**",
+    "./example/**",
+    "**/node_modules/**",
+    "**/vendor/**",
+    ".git",
+    "**/__mocks__/*"
+  ]
+}

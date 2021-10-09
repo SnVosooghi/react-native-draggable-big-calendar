@@ -1,0 +1,32 @@
+{
+  "name": "rndemo",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "android": "react-native run-android",
+    "ios": "react-native run-ios",
+    "start": "react-native start",
+    "test": "jest"
+  },
+  "dependencies": {
+    "calendarize": "^1.1.1",
+    "dayjs": "^1.10.4",
+    "jalali-moment": "^3.3.10",
+    "merge-anything": "^4.0.1",
+    "react": "17.0.1",
+    "react-native": "0.64.1",
+    "react-native-drax": "^0.8.1",
+    "react-native-gesture-handler": "^1.10.3"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.12.9",
+    "@babel/runtime": "^7.12.5",
+    "babel-jest": "^26.6.3",
+    "jest": "^26.6.3",
+    "metro-react-native-babel-preset": "^0.64.0",
+    "react-test-renderer": "17.0.1"
+  },
+  "jest": {
+    "preset": "react-native"
+  }
+}

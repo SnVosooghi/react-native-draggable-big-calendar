@@ -1,0 +1,426 @@
+import { storiesOf } from '@storybook/react'
+import dayjs from 'dayjs'
+import React from 'react'
+import { Alert, Dimensions, View } from 'react-native'
+
+import { Calendar } from '../src'
+import { Draggable } from '../src/components/CalendarDraggable'
+import { CONTROL_HEIGHT, Control } from './components/Control'
+import { customEventRenderer, events } from './events'
+import { useEvents } from './hooks'
+import { styles } from './styles'
+import { themes } from './themes'
+
+function alert(input: any) {
+  // @ts-ignore
+  if (typeof window !== 'undefined') {
+    // @ts-ignore
+    window.alert(String(input))
+  }
+  return Alert.alert('', String(input))
+}
+
+const SCREEN_HEIGHT = Dimensions.get('window').height
+
+storiesOf('showcase - Desktop', module)
+  .add('day mode', () => (
+    <View style={styles.desktop}>
+      <Calendar
+        height={SCREEN_HEIGHT}
+        events={events}
+        onPressEvent={(event) => alert(event.title)}
+        onPressCell={() => void 0}
+        mode="day"
+        moveCallBack={(event) =>
+          alert('you moved this event ' + event.dayMove + 'days and ' + event.hourMove + 'hours')
+        }
+      />
+    </View>
+  ))
+  .add('3days mode', () => (
+    <View style={styles.desktop}>
+      <Calendar
+        height={SCREEN_HEIGHT}
+        events={events}
+        onPressEvent={(event) => alert(event.title)}
+        onPressCell={() => void 0}
+        mode="3days"
+        moveCallBack={(event) =>
+          alert('you moved this event ' + event.dayMove + 'days and ' + event.hourMove + 'hours')
+        }
+      />
+    </View>
+  ))
+  .add('Week mode', () => {
+    const state = useEvents(events)
+    return (
+      <View style={styles.desktop}>
+        <Calendar
+          height={SCREEN_HEIGHT}
+          events={state.events}
+          onPressEvent={(event) => alert(event)}
+          onPressCell={state.addEvent}
+          headerDayNumberContainerStyle={{ backgroundColor: 'green' }}
+          moveCallBack={(event) =>
+            alert('you moved this event ' + event.dayMove + 'days and ' + event.hourMove + 'hours')
+          }
+        />
+      </View>
+    )
+  })
+  .add('Month mode', () => {
+    const state = useEvents(events)
+    return (
+      <View style={styles.desktop}>
+        <Calendar
+          mode="month"
+          height={SCREEN_HEIGHT}
+          events={[
+            ...state.events,
+            {
+              start: dayjs().add(2, 'days').toDate(),
+              end: dayjs().add(2, 'days').add(5, 'hours').toDate(),
+              title: 'This is sooooo long name event which will be truncated',
+              color: 'red',
+            },
+          ]}
+          onPressEvent={(event) => alert(event.title)}
+          onPressCell={state.addEvent}
+          moveCallBack={(event) =>
+            alert('you moved this event ' + event.dayMove + 'days and ' + event.hourMove + 'hours')
+          }
+        />
+      </View>
+    )
+  })
+  .add('Month mode - RTL', () => {
+    const state = useEvents(events)
+    return (
+      <View style={styles.desktop}>
+        <Calendar
+          mode="month"
+          height={SCREEN_HEIGHT}
+          isRTL
+          events={state.events}
+          onPressEvent={(event) => alert(event.title)}
+          onPressCell={state.addEvent}
+          moveCallBack={(event) =>
+            alert('you moved this event ' + event.dayMove + 'days and ' + event.hourMove + 'hours')
+          }
+        />
+      </View>
+    )
+  })
+  .add('event cell style', () => (
+    <View style={styles.desktop}>
+      <Calendar
+        height={SCREEN_HEIGHT}
+        events={events}
+        eventCellStyle={(event) => {
+          const backgroundColor = event.title.match(/Meeting/) ? 'red' : 'blue'
+          return { backgroundColor }
+        }}
+        moveCallBack={(event) =>
+          alert('you moved this event ' + event.dayMove + 'days and ' + event.hourMove + 'hours')
+        }
+      />
+    </View>
+  ))
+  .add('with controls', () => {
+    const [date, setDate] = React.useState(dayjs())
+    const props = {
+      onNext: React.useCallback(() => setDate(date.add(1, 'week')), [date]),
+      onPrev: React.useCallback(() => setDate(date.add(-1, 'week')), [date]),
+      onToday: React.useCallback(() => setDate(dayjs()), []),
+    }
+
+    return (
+      <View style={styles.desktop}>
+        <Control {...props} />
+        <Calendar
+          height={SCREEN_HEIGHT - CONTROL_HEIGHT}
+          events={events}
+          date={date.toDate()}
+          swipeEnabled={false}
+          moveCallBack={(event) =>
+            alert('you moved this event ' + event.dayMove + 'days and ' + event.hourMove + 'hours')
+          }
+        />
+      </View>
+    )
+  })
+  .add('scroll to some time', () => (
+    <View style={styles.desktop}>
+      <Calendar
+        height={SCREEN_HEIGHT}
+        events={events}
+        scrollOffsetMinutes={300}
+        moveCallBack={(event) =>
+          alert('you moved this event ' + event.dayMove + 'days and ' + event.hourMove + 'hours')
+        }
+      />
+    </View>
+  ))
+  .add('week start on Monday', () => (
+    <View style={styles.desktop}>
+      <Calendar
+        height={SCREEN_HEIGHT}
+        events={events}
+        weekStartsOn={1}
+        moveCallBack={(event) =>
+          alert('you moved this event ' + event.dayMove + 'days and ' + event.hourMove + 'hours')
+        }
+      />
+    </View>
+  ))
+  .add('all day event', () => {
+    const _events = [
+      ...events,
+      {
+        title: 'Vacation',
+        start: dayjs().add(1, 'day').set('hour', 0).set('minute', 0).toDate(),
+        end: dayjs().add(1, 'day').set('hour', 0).set('minute', 0).toDate(),
+        color: 'green',
+      },
+    ]
+
+    return (
+      <View style={styles.desktop}>
+        <Calendar
+          height={SCREEN_HEIGHT}
+          events={_events}
+          weekStartsOn={1}
+          moveCallBack={(event) =>
+            alert('you moved this event ' + event.dayMove + 'days and ' + event.hourMove + 'hours')
+          }
+        />
+      </View>
+    )
+  })
+  .add('on press date header', () => {
+    return (
+      <View style={styles.desktop}>
+        <Calendar
+          height={SCREEN_HEIGHT}
+          events={events}
+          onPressDateHeader={(date) => alert(date)}
+          mode="3days"
+          moveCallBack={(event) =>
+            alert('you moved this event ' + event.dayMove + 'days and ' + event.hourMove + 'hours')
+          }
+        />
+      </View>
+    )
+  })
+  .add('locale', () => {
+    React.useEffect(() => {
+      require('dayjs/locale/ja')
+    }, [])
+    return (
+      <View style={styles.desktop}>
+        <Calendar
+          locale="ja"
+          height={SCREEN_HEIGHT}
+          events={events}
+          moveCallBack={(event) =>
+            alert('you moved this event ' + event.dayMove + 'days and ' + event.hourMove + 'hours')
+          }
+        />
+      </View>
+    )
+  })
+  .add('AM/PM format', () => {
+    return (
+      <View style={styles.desktop}>
+        <Calendar
+          ampm
+          height={SCREEN_HEIGHT}
+          events={events}
+          moveCallBack={(event) =>
+            alert('you moved this event ' + event.dayMove + 'days and ' + event.hourMove + 'hours')
+          }
+        />
+      </View>
+    )
+  })
+  .add('Hidden Now indicator', () => (
+    <View style={styles.desktop}>
+      <Calendar
+        height={SCREEN_HEIGHT}
+        events={events}
+        hideNowIndicator
+        moveCallBack={(event) =>
+          alert('you moved this event ' + event.dayMove + 'days and ' + event.hourMove + 'hours')
+        }
+      />
+    </View>
+  ))
+  .add('More overlap padding', () => (
+    <View style={styles.desktop}>
+      <Calendar
+        height={SCREEN_HEIGHT}
+        events={events}
+        overlapOffset={70}
+        moveCallBack={(event) =>
+          alert('you moved this event ' + event.dayMove + 'days and ' + event.hourMove + 'hours')
+        }
+      />
+    </View>
+  ))
+  .add('RTL', () => {
+    React.useEffect(() => {
+      require('dayjs/locale/he')
+    }, [])
+    return (
+      <View style={styles.desktop}>
+        <Calendar
+          locale="he"
+          height={SCREEN_HEIGHT}
+          events={events}
+          isRTL
+          moveCallBack={(event) =>
+            alert('you moved this event ' + event.dayMove + 'days and ' + event.hourMove + 'hours')
+          }
+        />
+      </View>
+    )
+  })
+  .add('Custom Event Component renderer', () => {
+    return (
+      <View style={styles.desktop}>
+        <Calendar
+          height={SCREEN_HEIGHT}
+          renderEvent={customEventRenderer}
+          events={events}
+          moveCallBack={(event) =>
+            alert('you moved this event ' + event.dayMove + 'days and ' + event.hourMove + 'hours')
+          }
+        />
+      </View>
+    )
+  })
+  .add('Custom week length', () => (
+    <View style={styles.desktop}>
+      <Calendar
+        height={SCREEN_HEIGHT}
+        events={events}
+        mode={'custom'}
+        weekStartsOn={1}
+        weekEndsOn={5}
+        moveCallBack={(event) =>
+          alert('you moved this event ' + event.dayMove + 'days and ' + event.hourMove + 'hours')
+        }
+      />
+    </View>
+  ))
+  .add('Event spanning multiple days', () => (
+    <View style={styles.desktop}>
+      <Calendar
+        height={SCREEN_HEIGHT}
+        events={[
+          {
+            title: 'Multiple span',
+            start: dayjs().toDate(),
+            end: dayjs().add(28, 'hour').toDate(),
+            color: 'blue',
+          },
+          {
+            title: 'Multiple span longer',
+            start: dayjs().add(29, 'hour').toDate(),
+            end: dayjs().add(64, 'hour').toDate(),
+            color: 'blue',
+          },
+        ]}
+        eventCellStyle={(event) => (/longer/.test(event.title) ? { backgroundColor: 'green' } : {})}
+        mode={'week'}
+        moveCallBack={(event) =>
+          alert('you moved this event ' + event.dayMove + 'days and ' + event.hourMove + 'hours')
+        }
+      />
+    </View>
+  ))
+  .add('Provide custom theme', () => {
+    const state = useEvents(events)
+    return (
+      <View style={styles.desktop}>
+        <Calendar
+          height={SCREEN_HEIGHT}
+          events={state.events}
+          onPressEvent={(event) => alert(event.title)}
+          onPressCell={state.addEvent}
+          theme={{
+            palette: {
+              primary: {
+                main: 'purple',
+                contrastText: '#fff',
+              },
+            },
+          }}
+          moveCallBack={(event) =>
+            alert('you moved this event ' + event.dayMove + 'days and ' + event.hourMove + 'hours')
+          }
+        />
+      </View>
+    )
+  })
+  .add('Dark mode', () => {
+    const state = useEvents(events)
+    return (
+      <View style={[styles.desktop, { backgroundColor: '#333' }]}>
+        <Calendar
+          height={SCREEN_HEIGHT}
+          events={state.events}
+          onPressEvent={(event) => alert(event.title)}
+          onPressCell={state.addEvent}
+          theme={themes.dark}
+          moveCallBack={(event) =>
+            alert('you moved this event ' + event.dayMove + 'days and ' + event.hourMove + 'hours')
+          }
+        />
+      </View>
+    )
+  })
+  .add('Without the header', () => {
+    const state = useEvents(events)
+    return (
+      <View style={[styles.desktop]}>
+        <Calendar
+          height={SCREEN_HEIGHT}
+          events={state.events}
+          onPressEvent={(event) => alert(event.title)}
+          onPressCell={state.addEvent}
+          renderHeader={() => null}
+          moveCallBack={(event) =>
+            alert('you moved this event ' + event.dayMove + 'days and ' + event.hourMove + 'hours')
+          }
+        />
+      </View>
+    )
+  })
+  .add('Without the header (month)', () => {
+    const state = useEvents(events)
+    return (
+      <View style={[styles.desktop]}>
+        <Calendar
+          height={SCREEN_HEIGHT}
+          events={state.events}
+          onPressEvent={(event) => alert(event.title)}
+          onPressCell={state.addEvent}
+          renderHeaderForMonthView={() => null}
+          mode="month"
+          moveCallBack={(event) =>
+            alert('you moved this event ' + event.dayMove + 'days and ' + event.hourMove + 'hours')
+          }
+        />
+      </View>
+    )
+  })
+  .add('draggable', () => {
+    return (
+      <View style={[styles.desktop]}>
+        <Draggable />
+        <Draggable />
+        <Draggable />
+      </View>
+    )
+  })

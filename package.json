@@ -1,0 +1,113 @@
+{
+  "name": "react-native-draggable-big-calendar",
+  "version": "2.3.7",
+  "main": "build/index.js",
+  "jsnext:main": "build/index.es.js",
+  "module": "build/index.es.js",
+  "types": "build/index.d.ts",
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/snvosooghi/react-native-big-calendar.git"
+  },
+  "author": "gosho-kazuya <ketsume0211@gmail.com>",
+  "license": "MIT",
+  "scripts": {
+    "prepare": "simple-git-hooks || true",
+    "storybook": "start-storybook -p 7007",
+    "build-storybook": "build-storybook -o .storybook-build",
+    "sync-rndemo": "yarn build && cp -r build rndemo",
+    "start-rndemo-ios": "yarn sync-rndemo && cd rndemo && yarn ios",
+    "start-rndemo-android": "yarn sync-rndemo && cd rndemo && yarn android",
+    "test": "jest",
+    "format": "prettier --write {src,stories}/**.{ts,tsx}",
+    "lint": "eslint --ext ts,tsx src stories",
+    "lint:fix": "yarn lint --fix",
+    "watch": "rollup -cw",
+    "prepublish": "npm run build",
+    "build": "npm-run-all build:clean build:ts",
+    "build:clean": "rimraf build/",
+    "build:ts": "env NODE_ENV=production rollup -c"
+  },
+  "dependencies": {
+    "@react-native-community/cli": "^5.0.1",
+    "calendarize": "^1.1.1",
+    "dayjs": "^1.10.6",
+    "jalali-moment": "^3.3.10",
+    "merge-anything": "^4.0.1",
+    "react-native-eject": "^0.1.2"
+  },
+  "peerDependencies": {
+    "react": "^16.8.3",
+    "react-native": "0.59.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.14.6",
+    "@babel/helper-builder-react-jsx-experimental": "^7.12.11",
+    "@babel/plugin-proposal-private-property-in-object": "^7.14.5",
+    "@rollup/plugin-typescript": "^8.2.1",
+    "@storybook/react": "^6.3.4",
+    "@types/jest": "^26.0.23",
+    "@types/node": "^16.4.10",
+    "@types/react-native": "^0.64.10",
+    "@typescript-eslint/eslint-plugin": "^4.28.5",
+    "@typescript-eslint/parser": "^4.28.5",
+    "acorn-jsx": "^5.3.2",
+    "babel-loader": "^8.2.2",
+    "eslint": "^7.30.0",
+    "eslint-plugin-import": "^2.23.4",
+    "eslint-plugin-react": "^7.24.0",
+    "eslint-plugin-react-hooks": "^4.2.0",
+    "import-sort-style-module": "^6.0.0",
+    "jest": "^25.5.4",
+    "lint-staged": "^11.0.1",
+    "npm-run-all": "^4.1.5",
+    "prettier": "^2.3.2",
+    "prettier-plugin-import-sort": "^0.0.7",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "react-native": "^0.64.2",
+    "react-native-web": "^0.17.1",
+    "remeda": "^0.0.30",
+    "rimraf": "^3.0.2",
+    "rn-tailwind": "^1.0.16",
+    "rollup": "^2.52.6",
+    "rollup-plugin-typescript2": "^0.30.0",
+    "simple-git-hooks": "^2.5.1",
+    "tailwind-rn": "^3.0.1",
+    "ts-jest": "^25.5.1",
+    "ts-loader": "^8.0.10",
+    "tslib": "^2.3.0",
+    "typescript": "^4.3.5",
+    "webpack-merge": "^5.8.0"
+  },
+  "simple-git-hooks": {
+    "pre-commit": "npx lint-staged"
+  },
+  "lint-staged": {
+    "*.{ts,tsx,js,jsx}": [
+      "prettier --write",
+      "eslint --fix"
+    ],
+    "*.{md}": [
+      "prettier --write"
+    ]
+  },
+  "importSort": {
+    ".js, .jsx, .ts, .tsx": {
+      "style": "module",
+      "parser": "typescript"
+    }
+  },
+  "resolutions": {
+    "typescript": "^4.3.5"
+  },
+  "description": "![test](https://github.com/llotheo/react-native-big-calendar/workflows/test/badge.svg) ![release](https://github.com/llotheo/react-native-big-calendar/workflows/release/badge.svg) [![npm version](https://badge.fury.io/js/react-native-big-calendar.svg)](https://badge.fury.io/js/react-native-big-calendar) [![Netlify Status](https://api.netlify.com/api/v1/badges/ca0f2cc8-bb4f-4a18-be48-c2b10e2b6046/deploy-status)](https://app.netlify.com/sites/react-native-big-calendar/deploys) [![Dependabot Status](https://api.dependabot.com/badges/status?host=github&repo=llotheo/react-native-big-calendar)](https://dependabot.com)",
+  "bugs": {
+    "url": "https://github.com/snvosooghi/react-native-big-calendar/issues"
+  },
+  "homepage": "https://github.com/snvosooghi/react-native-big-calendar#readme",
+  "keywords": [
+    "customized",
+    "calendar"
+  ]
+}
