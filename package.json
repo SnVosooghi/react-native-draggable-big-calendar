@@ -31,7 +31,7 @@
   "dependencies": {
     "@react-native-community/cli": "^5.0.1",
     "calendarize": "^1.1.1",
-    "dayjs": "^1.10.6",
+    "dayjs": "^1.11.5",
     "jalali-moment": "^3.3.10",
     "merge-anything": "^4.0.1",
     "react-native-eject": "^0.1.2"
